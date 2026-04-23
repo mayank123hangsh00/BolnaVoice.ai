@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { mockLeads, mockCalls } from "@/lib/data";
+import { supabase } from "@/lib/supabase";
 
 // Webhook endpoint that Bolna calls when a call event occurs
 export async function POST(request: Request) {
@@ -13,6 +14,19 @@ export async function POST(request: Request) {
   const transcript = payload.transcript;
   const duration = payload.duration;
   const phoneNumber = payload.call_data?.recipient_phone_number;
+
+  // Save to Supabase
+  try {
+    await supabase.from("bolna_webhooks").insert({
+      phone: phoneNumber || "+1234567890",
+      status: status === "completed" ? "completed" : "failed",
+      duration: duration || 0,
+      extracted_data: extractedData || null,
+    });
+    console.log("Saved to Supabase successfully.");
+  } catch (error) {
+    console.error("Supabase insert error:", error);
+  }
 
   // Find the matching call record
   let call = mockCalls.find(
