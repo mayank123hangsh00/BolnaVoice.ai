@@ -18,6 +18,10 @@ export async function GET() {
       const budgetMin = getValue("budget_min");
       const budgetMax = getValue("budget_max");
 
+      const flattenedData = w.extracted_data?.["Lead Details"] 
+        ? Object.fromEntries(Object.entries(w.extracted_data["Lead Details"]).map(([k,v]:any) => [k, v?.subjective || v]))
+        : w.extracted_data;
+
       return {
       id: `call_${w.id.substring(0, 8)}`,
       leadId: `lead_${w.id.substring(0, 8)}`,
@@ -26,8 +30,9 @@ export async function GET() {
       agentId: "agent_live_001",
       status: w.status,
       duration: w.duration,
-      extractedData: w.extracted_data,
+      extractedData: flattenedData,
       summary: disposition ? `Lead ${disposition}. Budget: ${budgetMin}-${budgetMax}` : "Call processed",
+      transcript: w.transcript || null,
       createdAt: w.created_at,
       completedAt: w.created_at,
     }});

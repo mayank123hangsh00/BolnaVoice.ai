@@ -22,6 +22,7 @@ export async function POST(request: Request) {
       status: status === "completed" ? "completed" : "failed",
       duration: duration || 0,
       extracted_data: extractedData || null,
+      transcript: typeof transcript === 'string' ? transcript : (transcript ? JSON.stringify(transcript) : null),
     });
     console.log("Saved to Supabase successfully.");
   } catch (error) {
