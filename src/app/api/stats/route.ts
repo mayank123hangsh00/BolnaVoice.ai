@@ -14,7 +14,10 @@ export async function GET() {
       stats.totalCalls += webhooks.length;
       stats.leadsToday += webhooks.length;
       stats.callsToday += webhooks.length;
-      stats.qualifiedLeads += webhooks.filter(w => w.extracted_data?.disposition === 'qualified').length;
+      stats.qualifiedLeads += webhooks.filter(w => {
+        const ext = w.extracted_data?.["Lead Details"] || w.extracted_data || {};
+        return (ext.disposition?.subjective || ext.disposition) === 'qualified';
+      }).length;
     }
   } catch (error) {}
 

@@ -11,27 +11,31 @@ export async function GET() {
       .select("*")
       .order("created_at", { ascending: false });
 
-    const supabaseLeads = (webhooks || []).map((w: any) => ({
+    const supabaseLeads = (webhooks || []).map((w: any) => {
+      const ext = w.extracted_data?.["Lead Details"] || w.extracted_data || {};
+      const getValue = (key: string) => ext[key]?.subjective || ext[key];
+      
+      return {
       id: `lead_${w.id.substring(0, 8)}`,
-      name: w.extracted_data?.lead_name || "Supabase Webhook Lead",
+      name: getValue("lead_name") || "Supabase Webhook Lead",
       phone: w.phone,
       email: "webhook@example.com",
-      city: w.extracted_data?.preferred_location || "Unknown",
+      city: getValue("preferred_location") || "Unknown",
       source: "Bolna Voice Agent",
-      status: w.extracted_data?.disposition === "qualified" ? "qualified" : "new",
+      status: getValue("disposition") === "qualified" ? "qualified" : "new",
       createdAt: w.created_at,
       updatedAt: w.created_at,
-      qualification: w.extracted_data ? {
-        interested: w.extracted_data.interested === "yes",
-        budgetMin: w.extracted_data.budget_min,
-        budgetMax: w.extracted_data.budget_max,
-        preferredLocation: w.extracted_data.preferred_location,
-        propertyType: w.extracted_data.property_type,
-        timeline: w.extracted_data.timeline,
-        wantsSiteVisit: w.extracted_data.wants_site_visit === "yes",
-        disposition: w.extracted_data.disposition,
+      qualification: ext ? {
+        interested: getValue("interested") === "yes",
+        budgetMin: getValue("budget_min"),
+        budgetMax: getValue("budget_max"),
+        preferredLocation: getValue("preferred_location"),
+        propertyType: getValue("property_type"),
+        timeline: getValue("timeline"),
+        wantsSiteVisit: getValue("wants_site_visit") === "yes",
+        disposition: getValue("disposition"),
       } : undefined
-    }));
+    }});
 
     return NextResponse.json({ success: true, data: [...supabaseLeads, ...mockLeads] });
   } catch (error) {
