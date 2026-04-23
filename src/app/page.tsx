@@ -17,9 +17,9 @@ export default function Dashboard() {
     async function fetchData() {
       try {
         const [statsRes, leadsRes, callsRes] = await Promise.all([
-          fetch("/api/stats"),
-          fetch("/api/leads"),
-          fetch("/api/calls"),
+          fetch("/api/stats", { cache: "no-store" }),
+          fetch("/api/leads", { cache: "no-store" }),
+          fetch("/api/calls", { cache: "no-store" }),
         ]);
         
         const statsData = await statsRes.json();
