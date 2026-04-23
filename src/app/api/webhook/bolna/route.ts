@@ -15,9 +15,36 @@ export async function POST(request: Request) {
   const phoneNumber = payload.call_data?.recipient_phone_number;
 
   // Find the matching call record
-  const call = mockCalls.find(
+  let call = mockCalls.find(
     (c) => c.phoneNumber === phoneNumber && c.status === "in-progress"
   );
+
+  // Auto-create a lead and call record if Bolna initiates an unexpected call
+  if (!call) {
+    const newLeadId = `lead_live_${Math.random().toString(36).substring(2, 8)}`;
+    const newLead: any = {
+      id: newLeadId,
+      name: "Live Webhook Test",
+      phone: phoneNumber || "+1234567890",
+      city: "Unknown",
+      source: "Bolna Agent",
+      status: "new",
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    mockLeads.unshift(newLead);
+
+    call = {
+      id: `call_live_${Math.random().toString(36).substring(2, 8)}`,
+      leadId: newLeadId,
+      leadName: "Live Webhook Test",
+      phoneNumber: phoneNumber || "+1234567890",
+      agentId: payload.agent_id || "demo_agent",
+      status: "in-progress",
+      createdAt: new Date().toISOString(),
+    };
+    mockCalls.unshift(call);
+  }
 
   if (call) {
     call.status = status === "completed" ? "completed" : "failed";
