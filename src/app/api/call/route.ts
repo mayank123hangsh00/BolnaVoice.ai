@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { mockLeads, mockCalls } from "@/lib/data";
+import { CallRecord } from "@/lib/types";
 
 // Simulates triggering a Bolna API call
 export async function POST(request: Request) {
@@ -44,13 +45,13 @@ export async function POST(request: Request) {
         lead.status = "calling";
         lead.updatedAt = new Date().toISOString();
 
-        const callRecord = {
+        const callRecord: CallRecord = {
           id: `call_${Math.random().toString(36).substring(2, 10)}`,
           leadId: lead.id,
           leadName: lead.name,
           phoneNumber: lead.phone,
           agentId: agentId || "agent_demo_001",
-          status: "in-progress" as const,
+          status: "in-progress",
           createdAt: new Date().toISOString(),
         };
         mockCalls.unshift(callRecord);
@@ -79,13 +80,13 @@ export async function POST(request: Request) {
     lead.status = "calling";
     lead.updatedAt = new Date().toISOString();
 
-    const callRecord = {
+    const callRecord: CallRecord = {
       id: `call_${Math.random().toString(36).substring(2, 10)}`,
       leadId: lead.id,
       leadName: lead.name,
       phoneNumber: lead.phone,
       agentId: agentId || "agent_demo_001",
-      status: "in-progress" as const,
+      status: "in-progress",
       createdAt: new Date().toISOString(),
     };
     mockCalls.unshift(callRecord);
