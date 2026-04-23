@@ -1,36 +1,74 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Bolna AI - Real Estate Voice Agent & Dashboard
 
-## Getting Started
+This project is a full-stack Next.js web application built to interface with a Voice AI agent powered by [Bolna](https://bolna.dev/). It is designed for a **Real Estate Enterprise Use Case**: automating the initial contact, qualification, and data extraction for inbound property leads.
 
-First, run the development server:
+## 🚀 Enterprise Use Case: Real Estate Lead Qualification
+
+Real estate agencies often receive hundreds of leads daily, making it impossible for human agents to call everyone immediately. This delay leads to a drop in conversion rates.
+
+**The Solution:**
+A Bolna AI Voice Agent automatically calls new leads within seconds. The agent acts as a professional real estate consultant, qualifying the lead by identifying their intent, preferred location, budget, and property type. The extracted data is then sent via webhook to this Next.js application, which updates a beautiful, real-time analytics dashboard and CRM.
+
+**Outcome Metrics:**
+- Increased lead contact rate (100% of leads contacted within 5 minutes).
+- Reduced human agent time spent on unqualified leads.
+- Higher conversion rate due to immediate follow-up.
+
+## ✨ Features
+
+- **Real-Time Dashboard:** A stunning, dark-mode dashboard built with modern UI principles (glassmorphism, subtle animations) to view live metrics.
+- **Lead CRM:** View and manage leads, their status, and extracted preferences (budget, location, etc.).
+- **Live Call Logs:** Monitor ongoing and completed AI calls.
+- **Bolna Webhook Integration:** An API endpoint (`/api/webhook/bolna`) that receives structured data from the Bolna agent and updates the database in real-time.
+- **Data Visualization:** Built with Recharts for visualizing agent performance and conversion rates.
+
+## 🛠️ Technology Stack
+
+- **Framework:** Next.js 14+ (App Router)
+- **Styling:** Tailwind CSS (v4) with Custom CSS variables for a dynamic design system.
+- **Icons & Animations:** Lucide React, Framer Motion.
+- **Voice Agent:** Bolna API.
+
+## 📄 Agent Configuration
+
+For details on the Voice AI agent's prompt, data extraction schema, and webhook setup, please refer to the [BOLNA_AGENT_CONFIG.md](./BOLNA_AGENT_CONFIG.md) file.
+
+## ⚙️ Getting Started
+
+### Prerequisites
+
+- Node.js (v18 or newer)
+- npm or pnpm
+- A Bolna account (to configure the voice agent)
+
+### Installation
+
+1. Clone the repository and install dependencies:
+   ```bash
+   npm install
+   ```
+
+2. Start the development server:
+   ```bash
+   npm run dev
+   ```
+
+3. Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+### Setting up the Webhook (Local Development)
+
+To test the Bolna integration locally, you need to expose your local server to the internet using a tool like `ngrok`:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+ngrok http 3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Use the generated ngrok URL (e.g., `https://your-ngrok-url.ngrok-free.app/api/webhook/bolna`) as the webhook destination in your Bolna agent configuration.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🎥 Demonstration Video
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+*(Please provide a link to the end-to-end demonstration video here. The video should show the user expressing interest on a simulated landing page, receiving a call from the Bolna AI agent, and the web app dashboard updating in real-time based on the conversation's extracted data.)*
 
-## Learn More
+## 📝 License
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This project is open-source and available under the MIT License.
