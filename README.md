@@ -19,17 +19,18 @@ A Bolna AI Voice Agent automatically calls new leads within seconds. The agent a
 ## ✨ Features
 
 - **Real-Time Dashboard:** A stunning, dark-mode dashboard built with modern UI principles (glassmorphism, subtle animations) to view live metrics.
-- **Lead CRM:** View and manage leads, their status, and extracted preferences (budget, location, etc.).
-- **Live Call Logs:** Monitor ongoing and completed AI calls.
-- **Bolna Webhook Integration:** An API endpoint (`/api/webhook/bolna`) that receives structured data from the Bolna agent and updates the database in real-time.
-- **Data Visualization:** Built with Recharts for visualizing agent performance and conversion rates.
+- **Persistent Database:** Integrates seamlessly with Supabase (PostgreSQL) to store all webhook payloads, call transcripts, and extracted lead data permanently.
+- **Lead CRM:** View and manage leads, their status, and extracted preferences (budget, location, timeline, etc.).
+- **Live Call Logs:** Monitor ongoing and completed AI calls with full conversation transcripts mapped natively to the UI.
+- **Bolna Webhook Integration:** A robust Next.js API route (`/api/webhook/bolna`) that ingests structured JSON from Bolna and instantly persists it to PostgreSQL.
 
 ## 🛠️ Technology Stack
 
 - **Framework:** Next.js 14+ (App Router)
+- **Database:** Supabase (PostgreSQL)
 - **Styling:** Tailwind CSS (v4) with Custom CSS variables for a dynamic design system.
 - **Icons & Animations:** Lucide React, Framer Motion.
-- **Voice Agent:** Bolna API.
+- **Voice Agent:** Bolna AI Platform.
 
 ## 📄 Agent Configuration
 
@@ -42,30 +43,47 @@ For details on the Voice AI agent's prompt, data extraction schema, and webhook 
 - Node.js (v18 or newer)
 - npm or pnpm
 - A Bolna account (to configure the voice agent)
+- A Supabase account (for the database)
 
-### Installation
+### Installation & Local Setup
 
 1. Clone the repository and install dependencies:
    ```bash
    npm install
    ```
 
-2. Start the development server:
+2. Set up Environment Variables:
+   Create a `.env.local` file in the root of the project and add your Supabase credentials:
+   ```env
+   NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
+   ```
+
+3. Database Setup:
+   In your Supabase SQL Editor, run the following command to create the webhook table and disable Row Level Security (RLS) to allow external inserts:
+   ```sql
+   CREATE TABLE bolna_webhooks (
+     id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+     phone text NOT NULL,
+     status text NOT NULL,
+     duration integer,
+     extracted_data jsonb,
+     transcript text,
+     created_at timestamp with time zone DEFAULT timezone('utc'::text, now()) NOT NULL
+   );
+   
+   ALTER TABLE bolna_webhooks DISABLE ROW LEVEL SECURITY;
+   ```
+
+4. Start the development server:
    ```bash
    npm run dev
    ```
 
-3. Open [http://localhost:3000](http://localhost:3000) in your browser.
+### Connecting Bolna (Webhook)
 
-### Setting up the Webhook (Local Development)
-
-To test the Bolna integration locally, you need to expose your local server to the internet using a tool like `ngrok`:
-
-```bash
-ngrok http 3000
-```
-
-Use the generated ngrok URL (e.g., `https://your-ngrok-url.ngrok-free.app/api/webhook/bolna`) as the webhook destination in your Bolna agent configuration.
+In your Bolna Dashboard, point the agent's webhook destination to your live Vercel URL (or use Ngrok for local testing):
+`https://your-app-domain.vercel.app/api/webhook/bolna`
 
 ## 🎥 Demonstration Video
 
